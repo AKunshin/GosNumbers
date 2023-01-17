@@ -12,6 +12,7 @@ def gos_numbers_gen():
     gos_number = random.choice(letters) + str(numbers) + \
         random.choice(letters) + random.choice(letters)
     print(gos_number)
+    return gos_number
 
 
 if __name__ == "__main__":

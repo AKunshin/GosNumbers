@@ -6,4 +6,4 @@ class GosNumberSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GosNumber
-        fields = "__all__"
+        fields = ('uuid', 'number')

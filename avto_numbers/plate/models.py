@@ -3,7 +3,7 @@ from django.db import models
 
 
 class GosNumber(models.Model):
-    id = models.UUIDField(primary_key=True, auto_created=True,
+    uuid = models.UUIDField(auto_created=True,
                           default=uuid.uuid4, unique=True,
                           editable=False, verbose_name="Id")
     number = models.CharField(max_length=6, verbose_name="Гос. номер авто")

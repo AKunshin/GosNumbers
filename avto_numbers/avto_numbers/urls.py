@@ -16,12 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-from plate.views import GosNumberViewSet, GenerateGosNumberViewSet
+from plate.views import GosNumberViewSet
+# GenerateGosNumberViewSet
 
 router = routers.SimpleRouter()
 
 router.register(r'plate', GosNumberViewSet)
-router.register(r'generate', GenerateGosNumberViewSet)
+# router.register(r'plate/generate', GenerateGosNumberViewSet, basename="generate")
 
 urlpatterns = [
     path('admin/', admin.site.urls),

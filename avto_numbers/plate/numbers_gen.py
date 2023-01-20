@@ -2,7 +2,7 @@ import random
 from loguru import logger
 
 
-def gos_numbers_gen() -> str:
+def generate_gos_numbers() -> str:
     # Генерация гос. номера
     letters = ['А', 'В', 'Е', 'К', 'М', 'Н', 'О', 'Р', 'С', 'Т', 'У', 'Х']
     numbers = random.randint(1, 999)
@@ -17,5 +17,5 @@ def gos_numbers_gen() -> str:
 
 
 if __name__ == "__main__":
-    gos_numbers = gos_numbers_gen(3)
-    logger.debug(gos_numbers)
+    gos_numbers = generate_gos_numbers()
+    logger.debug(f"[INFO] Сгенерированный госномер: {gos_numbers}")

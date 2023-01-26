@@ -1,4 +1,3 @@
-import re
 from loguru import logger
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
@@ -8,7 +7,7 @@ from rest_framework import status
 from django.core.exceptions import ValidationError
 from .serializers import GosNumberSerializer
 from .models import GosNumber
-from .service import generate_gos_numbers
+from .service import generate_gos_numbers, validate_number
 
 
 class GosNumberViewSet(ModelViewSet):
@@ -49,18 +48,17 @@ class GosNumberViewSet(ModelViewSet):
         except ValidationError:
             return Response({'detail': 'Неверный uuid'}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
     @action(methods=['post'], detail=False)
     def add(self, request):
         # Метод для добавления переданного клиентом гос.номера в БД
-        plate = request.GET.get('plate').upper()
+        plate = request.GET.get('plate')
         logger.debug(f"Полученный номер: {plate}")
         if not plate:
-            return Response({'detail':'Не передан гос. номер'}, status=status.HTTP_400_BAD_REQUEST)
-        tpl = r'[АВЕКМНОРСТУХ]{1}\d{3}[АВЕКМНОРСТУХ]{2}$'
-        if not re.match(tpl, plate):
+            return Response({'detail': 'Не передан гос. номер'}, status=status.HTTP_400_BAD_REQUEST)
+        plate = plate.upper()
+        if not validate_number(plate):
             return Response({'detail': 'Ошибка в гос. номере'}, status=status.HTTP_400_BAD_REQUEST)
         new_number = GosNumber.objects.create(number=plate)
         serializer = GosNumberSerializer(new_number)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-

@@ -1,4 +1,5 @@
 import random
+import re
 from loguru import logger
 
 
@@ -16,6 +17,8 @@ def generate_gos_numbers() -> str:
     return gos_number
 
 
-if __name__ == "__main__":
-    gos_numbers = generate_gos_numbers()
-    logger.debug(f"[INFO] Сгенерированный госномер: {gos_numbers}")
+def validate_number(plate: str) -> bool:
+    # Проверка гос. номера на корректность
+    tpl = r'[АВЕКМНОРСТУХ]{1}\d{3}[АВЕКМНОРСТУХ]{2}$'
+    if re.match(tpl, plate):
+        return True

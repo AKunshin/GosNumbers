@@ -3,7 +3,6 @@ from .models import GosNumber
 
 
 class GosNumberSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = GosNumber
         fields = ('uuid', 'number')

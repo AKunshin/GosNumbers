@@ -8,7 +8,7 @@ from rest_framework import status
 from django.core.exceptions import ValidationError
 from .serializers import GosNumberSerializer
 from .models import GosNumber
-from .numbers_gen import generate_gos_numbers
+from .service import generate_gos_numbers
 
 
 class GosNumberViewSet(ModelViewSet):

@@ -22,7 +22,7 @@ from rest_framework_simplejwt.views import (
 )
 from plate.views import GosNumberViewSet
 
-router = routers.DefaultRouter()
+router = routers.SimpleRouter()
 
 router.register(r'plate', GosNumberViewSet)
 

@@ -2,8 +2,8 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
-from loguru import logger
 from plate.models import GosNumber
+from plate.serializers import GosNumberSerializer
 
 
 class GosNumberApiTestCase(APITestCase):
@@ -38,16 +38,28 @@ class GosNumberApiTestCase(APITestCase):
 
     def test_add(self):
         url = reverse("gosnumber-add")
-        logger.debug(f"Path: {url}")
         data = {'plate': 'А213АА'}
-        logger.debug(f"Data: {data}")
         response = self.client.post(url, data=data)
+        gos_number_1 = GosNumber.objects.get(pk=1)
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         self.assertEqual(1, GosNumber.objects.all().count())
+        self.assertEqual(GosNumberSerializer(gos_number_1, many=False).data, response.data)
+        response = self.client.post(url, data={})
+        self.assertEqual('Не передан гос. номер', response.data['detail'])
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        response = self.client.post(url, data={'plate': 'S123DD'})
+        self.assertEqual('Ошибка в гос. номере', response.data['detail'])
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
-    # def test_generate_list(self):
-    #     url = reverse("gosnumber-list")
-    #     logger.debug(f"URL: {url}")
-    #     self.client.force_authenticate(user=self.user)
-    #     response = self.client.get(url)
-    #     logger.debug(f"Response: {response.data}")
+    def test_get_by_uuid(self):
+        url = reverse('gosnumber-get')
+        gos_number = GosNumber.objects.create(number="А000АА")
+        gs = str(gos_number.uuid)
+        response = self.client.get(url)
+        self.assertEqual('Не передан uuid', response.data['detail'])
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        response = self.client.get(url, data={"id": "23"})
+        self.assertEqual('Неверный uuid', response.data['detail'])
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        response = self.client.get(url, data={"id": gs})
+        self.assertEqual(status.HTTP_200_OK, response.status_code)

@@ -21,16 +21,35 @@ class GosNumberViewSet(ModelViewSet):
     def generate(self, request):
         # Метод для генерации указанного количества номеров
         amount = request.GET.get('amount')
+        # if not amount:
+        #     number = generate_gos_numbers()
+        #     last_gosnumber = GosNumber.objects.create(number=number)
+        #     serializer = GosNumberSerializer(last_gosnumber)
+        #     return Response(serializer.data, status=status.HTTP_200_OK)
+        # i = 0
+        # amount = int(amount)
+        # while i < amount:
+        #     number = generate_gos_numbers()
+        #     GosNumber.objects.create(number=number)
+        #     i += 1
+        # gosnumbers = GosNumber.objects.all().order_by('-pk')[:amount]
+        # serializer = GosNumberSerializer(gosnumbers, many=True)
+        # return Response(serializer.data, status=status.HTTP_200_OK)
+
         if not amount:
-            number = generate_gos_numbers()
-            last_gosnumber = GosNumber.objects.create(number=number)
+            new_number = generate_gos_numbers()
+            while GosNumber.objects.filter(number=new_number).exists():
+                new_number = generate_gos_numbers()
+            last_gosnumber = GosNumber.objects.create(number=new_number)
             serializer = GosNumberSerializer(last_gosnumber)
             return Response(serializer.data, status=status.HTTP_200_OK)
         i = 0
         amount = int(amount)
         while i < amount:
-            number = generate_gos_numbers()
-            GosNumber.objects.create(number=number)
+            new_number = generate_gos_numbers()
+            while GosNumber.objects.filter(number=new_number).exists():
+                new_number = generate_gos_numbers()
+            GosNumber.objects.create(number=new_number)
             i += 1
         gosnumbers = GosNumber.objects.all().order_by('-pk')[:amount]
         serializer = GosNumberSerializer(gosnumbers, many=True)
@@ -61,11 +80,10 @@ class GosNumberViewSet(ModelViewSet):
         plate = plate.upper()
         if not validate_number(plate):
             return Response({'detail': 'Ошибка в гос. номере'}, status=status.HTTP_400_BAD_REQUEST)
-        try:
-            new_number = GosNumber.objects.create(number=plate)
-            serializer = GosNumberSerializer(new_number)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except IntegrityError:
+        if GosNumber.objects.filter(number=plate).exists():
             return Response(
                 {'detail': "Данный гос. номер уже содержится в БД"},
                 status=status.HTTP_400_BAD_REQUEST)
+        new_number = GosNumber.objects.create(number=plate)
+        serializer = GosNumberSerializer(new_number)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

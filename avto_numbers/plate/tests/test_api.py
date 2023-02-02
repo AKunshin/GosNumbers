@@ -37,9 +37,9 @@ class GosNumberApiTestCase(APITestCase):
 
     def test_generate_many(self):
         url = reverse("gosnumber-generate")
-        response = self.client.get(url, data={"amount": "3"})
+        response = self.client.get(url, data={"amount": "10"})
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(3, GosNumber.objects.all().count())
+        self.assertEqual(10, GosNumber.objects.all().count())
 
     def test_add(self):
         url = reverse("gosnumber-add")

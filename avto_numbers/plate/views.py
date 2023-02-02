@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
+from django.db import IntegrityError
 from .serializers import GosNumberSerializer
 from .models import GosNumber
 from .service import generate_gos_numbers, validate_number
@@ -22,7 +23,6 @@ class GosNumberViewSet(ModelViewSet):
         amount = request.GET.get('amount')
         if not amount:
             number = generate_gos_numbers()
-            # logger.debug(f"Не передан amount, вывод одного номера: {number}")
             last_gosnumber = GosNumber.objects.create(number=number)
             serializer = GosNumberSerializer(last_gosnumber)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -30,7 +30,6 @@ class GosNumberViewSet(ModelViewSet):
         amount = int(amount)
         while i < amount:
             number = generate_gos_numbers()
-            # logger.debug(f"Gos Number: {number}")
             GosNumber.objects.create(number=number)
             i += 1
         gosnumbers = GosNumber.objects.all().order_by('-pk')[:amount]
@@ -62,6 +61,11 @@ class GosNumberViewSet(ModelViewSet):
         plate = plate.upper()
         if not validate_number(plate):
             return Response({'detail': 'Ошибка в гос. номере'}, status=status.HTTP_400_BAD_REQUEST)
-        new_number = GosNumber.objects.create(number=plate)
-        serializer = GosNumberSerializer(new_number)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        try:
+            new_number = GosNumber.objects.create(number=plate)
+            serializer = GosNumberSerializer(new_number)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except IntegrityError:
+            return Response(
+                {'detail': "Данный гос. номер уже содержится в БД"},
+                status=status.HTTP_400_BAD_REQUEST)

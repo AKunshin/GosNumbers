@@ -6,7 +6,7 @@ class GosNumber(models.Model):
     uuid = models.UUIDField(auto_created=True,
                           default=uuid.uuid4, unique=True,
                           editable=False, verbose_name="Id")
-    number = models.CharField(max_length=6, verbose_name="Гос. номер авто")
+    number = models.CharField(max_length=6, unique=True, verbose_name="Гос. номер авто")
 
     def __str__(self):
         return self.number

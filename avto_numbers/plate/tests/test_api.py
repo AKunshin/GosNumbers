@@ -22,7 +22,12 @@ class GosNumberApiTestCase(APITestCase):
         api_client = APIClient()
         login_data = {"username": "test_username", "password": "pass"}
         response = api_client.post(url, data=login_data, format="json")
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        if response.data["access"]:
+            jwt_access = True
+        self.assertEqual(jwt_access, True)
+        if response.data["refresh"]:
+            jwt_refresh = True
+        self.assertEqual(jwt_refresh, True)
 
     def test_generate_one(self):
         url = reverse("gosnumber-generate")
@@ -50,6 +55,12 @@ class GosNumberApiTestCase(APITestCase):
         response = self.client.post(url, data={'plate': 'S123DD'})
         self.assertEqual('Ошибка в гос. номере', response.data['detail'])
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        GosNumber.objects.create(number="А001АА")
+        data = {'plate': 'А001АА'}
+        response = self.client.post(url, data=data)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual('Данный гос. номер уже содержится в БД', response.data['detail'])
+
 
     def test_get_by_uuid(self):
         url = reverse('gosnumber-get')

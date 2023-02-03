@@ -6,7 +6,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
-from django.db import IntegrityError
 from .serializers import GosNumberSerializer
 from .models import GosNumber
 from .service import generate_gos_numbers, validate_number
@@ -21,36 +20,15 @@ class GosNumberViewSet(ModelViewSet):
     def generate(self, request):
         # Метод для генерации указанного количества номеров
         amount = request.GET.get('amount')
-        # if not amount:
-        #     number = generate_gos_numbers()
-        #     last_gosnumber = GosNumber.objects.create(number=number)
-        #     serializer = GosNumberSerializer(last_gosnumber)
-        #     return Response(serializer.data, status=status.HTTP_200_OK)
-        # i = 0
-        # amount = int(amount)
-        # while i < amount:
-        #     number = generate_gos_numbers()
-        #     GosNumber.objects.create(number=number)
-        #     i += 1
-        # gosnumbers = GosNumber.objects.all().order_by('-pk')[:amount]
-        # serializer = GosNumberSerializer(gosnumbers, many=True)
-        # return Response(serializer.data, status=status.HTTP_200_OK)
-
-        if not amount:
-            new_number = generate_gos_numbers()
+        if amount:
+            amount = int(amount)
+        else:
+            amount = 1
+        new_numbers = generate_gos_numbers(amount)
+        for new_number in new_numbers:
             while GosNumber.objects.filter(number=new_number).exists():
-                new_number = generate_gos_numbers()
-            last_gosnumber = GosNumber.objects.create(number=new_number)
-            serializer = GosNumberSerializer(last_gosnumber)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        i = 0
-        amount = int(amount)
-        while i < amount:
-            new_number = generate_gos_numbers()
-            while GosNumber.objects.filter(number=new_number).exists():
-                new_number = generate_gos_numbers()
+                new_number = generate_gos_numbers(1)
             GosNumber.objects.create(number=new_number)
-            i += 1
         gosnumbers = GosNumber.objects.all().order_by('-pk')[:amount]
         serializer = GosNumberSerializer(gosnumbers, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

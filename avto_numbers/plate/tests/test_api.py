@@ -48,7 +48,8 @@ class GosNumberApiTestCase(APITestCase):
         gos_number_1 = GosNumber.objects.get(pk=1)
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         self.assertEqual(1, GosNumber.objects.all().count())
-        self.assertEqual(GosNumberSerializer(gos_number_1, many=False).data, response.data)
+        self.assertEqual(GosNumberSerializer(
+            gos_number_1, many=False).data, response.data)
         response = self.client.post(url, data={})
         self.assertEqual('Не передан гос. номер', response.data['detail'])
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
@@ -59,8 +60,8 @@ class GosNumberApiTestCase(APITestCase):
         data = {'plate': 'А001АА'}
         response = self.client.post(url, data=data)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
-        self.assertEqual('Данный гос. номер уже содержится в БД', response.data['detail'])
-
+        self.assertEqual('Данный гос. номер уже содержится в БД',
+                         response.data['detail'])
 
     def test_get_by_uuid(self):
         url = reverse('gosnumber-get')

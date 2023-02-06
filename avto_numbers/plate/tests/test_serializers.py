@@ -9,15 +9,18 @@ class GosNumberSerializerTestCase(TestCase):
         gos_number_2 = GosNumber.objects.create(number="В000ВВ")
         gs_1 = str(gos_number_1.uuid)
         gs_2 = str(gos_number_2.uuid)
-        data = GosNumberSerializer([gos_number_1, gos_number_2], many=True).data
+        data = GosNumberSerializer(
+            [gos_number_1, gos_number_2],
+            many=True
+            ).data
         expected_data = [
             {
-                'uuid': gs_1,
-                'number': "А000АА"
+                "uuid": gs_1,
+                "number": "А000АА"
             },
             {
-                'uuid': gs_2,
-                'number': "В000ВВ"
+                "uuid": gs_2,
+                "number": "В000ВВ"
             }
         ]
         self.assertEqual(expected_data, data)

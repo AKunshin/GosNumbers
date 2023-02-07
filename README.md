@@ -114,6 +114,6 @@ curl -X POST -H "Authorization: Bearer Ваш_access-token" -H "Content-Type: ap
 ```
 
 #### Тестирование
-Тестирование с помощью unittest.
+Тестирование выполнено с помощью unittest.
 
 Coverage 95%

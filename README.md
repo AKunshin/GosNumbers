@@ -97,3 +97,18 @@ curl -X GET -H "Authorization: Bearer Ваш_access-token" -H "Content-Type: app
 ```
 curl -X GET -H "Authorization: Bearer Ваш_access-token" -H "Content-Type: application/json" http://localhost:8000/plate/get/?id=Нужный_вам_uuid
 ```
+
+#### Метод PLATE/ADD
+
+Метод позволяет добавить гос.номер вручную
+Требования к номеру:
+Буквы - только кириллица из диапазона: А,В,Е,К,М,Н,О,Р,С,Т,У,Х
+Маска номера: 1 буква, 3 цифры, 2 буквы
+
+```
+curl -X POST -H "Authorization: Bearer Ваш_access-token" -H "Content-Type: application/json" -d '{"plate":"ГОСНОМЕР"}' http://localhost:8000/plate/add/ 
+```
+
+#### Тестирование
+Тестирование с помощью unittest
+Coverage 95%

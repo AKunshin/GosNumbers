@@ -59,6 +59,10 @@ python manage.py runserver
 ```
 python manage.py createsuperuser
 ```
+Для примера, имя пользователя admin, пароль 1234
+
+#### Получение jwt-token
+
 Перейти на  страницу:
 ```
 http://localhost:8000/token/
@@ -80,7 +84,16 @@ http://localhost:8000/token/refresh/
 curl -X POST -H "Content-Type: application/json" -d '{"refresh":"Ваш refresh-ключ"}' http://localhost:8000/token/refresh/
 ```
 
+#### Метод PLATE/GENERATE
+
 При обращении по http://localhost:8000/plate/generate/
 ```
-curl -X GET -H "Authorization: Bearer Ваш access-token" -H "Content-Type: application/json" http://localhost:8000/plate/generate/?amount=желаемое количество номеров
+curl -X GET -H "Authorization: Bearer Ваш_access-token" -H "Content-Type: application/json" http://localhost:8000/plate/generate/?amount=желаемое_количество_номеров
+```
+Если не указать amount, будет сгенерирован 1 номер
+
+#### Метод PLATE/GET
+
+```
+curl -X GET -H "Authorization: Bearer Ваш_access-token" -H "Content-Type: application/json" http://localhost:8000/plate/get/?id=Нужный_вам_uuid
 ```

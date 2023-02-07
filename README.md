@@ -27,7 +27,7 @@ REST-API (Python)
 -------
 ```
 git clone https://github.com/AKunshin/GosNumbers.git
-cd avto_numbers
+cd GosNumbers
 python3 -m venv env
 ```
 Для Linux:

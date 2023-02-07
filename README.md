@@ -85,22 +85,24 @@ curl -X POST -H "Content-Type: application/json" -d '{"refresh":"Ваш refresh-
 ```
 
 #### Метод PLATE/GENERATE
+Метод для генерации указаннго количества гос. номеров автомобилей
 
-При обращении по http://localhost:8000/plate/generate/
+При обращении по http://localhost:8000/plate/generate/ нужно указать желаемое количество номеров
 ```
 curl -X GET -H "Authorization: Bearer Ваш_access-token" -H "Content-Type: application/json" http://localhost:8000/plate/generate/?amount=желаемое_количество_номеров
 ```
 Если не указать amount, будет сгенерирован 1 номер
 
 #### Метод PLATE/GET
+Метод для получения номера из БД. id – идентификатор записи в формате uuid4
 
 ```
 curl -X GET -H "Authorization: Bearer Ваш_access-token" -H "Content-Type: application/json" http://localhost:8000/plate/get/?id=Нужный_вам_uuid
 ```
 
 #### Метод PLATE/ADD
+Метод позволяет добавить гос.номер вручную
 
-###### Метод позволяет добавить гос.номер вручную
 Требования к номеру:
 
 Буквы - только кириллица из диапазона: А,В,Е,К,М,Н,О,Р,С,Т,У,Х

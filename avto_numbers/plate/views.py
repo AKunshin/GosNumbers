@@ -57,7 +57,7 @@ class GosNumberViewSet(ModelViewSet):
     @action(methods=["post"], detail=False)
     def add(self, request):
         # Метод для добавления переданного клиентом гос.номера в БД
-        plate = request.POST.get("plate")
+        plate = request.data.get("plate")
         # Из POST-запроса получаем значение plate
         logger.debug(f"Полученный номер: {plate}")
         if not plate:

@@ -61,7 +61,7 @@ class GosNumberApiTestCase(APITestCase):
     def test_add(self):
         url = reverse("gosnumber-add")
         data = {"plate": "А213АА"}
-        response = self.client.post(url, data=data)
+        response = self.client.post(url, data=data, format="json")
         gos_number_1 = GosNumber.objects.get(pk=1)
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         self.assertEqual(1, GosNumber.objects.all().count())
